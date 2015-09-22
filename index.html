@@ -70,6 +70,19 @@
     score++;
     scoreEl.textContent = score;
     difficulty -= 0.05;
+    
+    if(currX > window.innerWidth){
+      currX = window.innerWidth;
+    }else if(currX < 0){
+      currX = 0;
+    }
+    
+    if(currY < 0){
+      currY = 0;
+    }else if(currY > window.innerHeight){
+      currY = window.innerHeight;
+    }
+    
   }, 10);
 </script>
     
