@@ -67,8 +67,8 @@
   var mouseActive = false;
   var mouseActiveTimer = null;
   document.addEventListener('mousemove', function (e) {
-    clientX = e.clientX + document.body.scrollLeft - 10;
-    clientY = e.clientY + document.body.scrollTop - 10;
+    clientX = e.clientX + document.body.scrollLeft;
+    clientY = e.clientY + document.body.scrollTop;
     mouseActive = true;
 
     // stop adding score when a user is not moving mouse
