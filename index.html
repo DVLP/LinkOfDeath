@@ -67,9 +67,13 @@
     link.style.left = currX + 'px';
     link.style.top = currY + 'px';
     score++;
-    scoreEl.textContent = score;
+    scoreEl.textContent = "Score:" + score;
+    var IsNotHardEnough = difficulty > 1.5;
+	if(IsNotHardEnough){
     difficulty -= 0.05;
-    
+    }else{
+    difficulty = 1.5;
+    }
     if(currX > window.innerWidth){
       currX = window.innerWidth;
     }else if(currX < 0){
