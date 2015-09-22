@@ -63,28 +63,30 @@
     currY += (clientY - currY) / (2 * difficulty);
     you.style.left = clientX + 'px';
     you.style.top = clientY + 'px';
-    
+
     link.style.left = currX + 'px';
     link.style.top = currY + 'px';
     score++;
     scoreEl.textContent = score;
     difficulty -= 0.05;
-    
+
+      link.click();
+
     if(currX > window.innerWidth){
       currX = window.innerWidth;
     }else if(currX < 0){
       currX = 0;
     }
-    
+
     if(currY < 0){
       currY = 0;
     }else if(currY > window.innerHeight){
       currY = window.innerHeight;
     }
-    
+
   }, 10);
 </script>
-    
+
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
