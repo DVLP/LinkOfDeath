@@ -61,6 +61,8 @@
   var you = document.getElementById('you');
   var scoreEl = document.getElementById('score');
   var link = document.getElementById('link');
+  var linkOffsetX = link.offsetWidth / 2;
+  var linkOffsetY = link.offsetHeight / 2;
   var difficultyLimit = 1.5;
   var mouseActive = false;
   var mouseActiveTimer = null;
@@ -84,8 +86,8 @@
     you.style.left = clientX + 'px';
     you.style.top = clientY + 'px';
 
-    link.style.left = currX + 'px';
-    link.style.top = currY + 'px';
+    link.style.left = currX - linkOffsetX + 'px';
+    link.style.top = currY - linkOffsetY + 'px';
     if(mouseActive) {
       score++;
     }
