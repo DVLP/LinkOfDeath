@@ -12,26 +12,43 @@
 
       <style>
       body {
-          cursor: none;
-          font-family: sans-serif;
+        font-family: sans-serif;
+      }
+      body.state-playing {
+        cursor: none;
+      }
+      body.state-playing #you {
+        display: block;
+      }
+      body.state-playing #link {
+        display: block;
+      }
+      body.state-playing #gameover {
+        display: none;
+      }
+      button {
+        cursor: pointer;
+        box-shadow: 3px 3px 5px #ccc;
       }
       #link{
-          background: #f00;
-          color: #fff;
-          position:absolute;
-          font-size: 10px;
-          padding: 5px;
-          border-radius: 10px;
-          box-shadow: 0px 0px 15px #ffaaaa;
-          z-index: 5;
+        display: none;
+        background: #f00;
+        color: #fff;
+        position:absolute;
+        font-size: 10px;
+        padding: 5px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 15px #ffaaaa;
+        z-index: 5;
       }
       #you {
-          background: #000;
-          width: 20px;
-          height: 20px;
-          position:absolute;
-          border-radius: 10px;
-          box-shadow: 2px 2px 15px #ccc;
+        display: none;
+        background: #000;
+        width: 20px;
+        height: 20px;
+        position:absolute;
+        border-radius: 10px;
+        box-shadow: 2px 2px 15px #ccc;
       }
       #score {
           position:absolute;
@@ -39,12 +56,35 @@
           right: 10px;
           font-size: 30px;
       }
+      #restart {
+        padding: 10px;
+        border: 0;
+        border-radius: 5px;
+        background: #33f;
+        font-weight: bold;
+        color: #fff;
+      }
+      #gameover {
+        display: block;
+        padding: 100px 50px;
+      }
       </style>
   </head>
-  <body>
+  <body class="state-playing">
     <div id="score"></div>
     <div id="you"></div>
     <a id="link" href="http://a/%%30%30">LINK OF DEATH<br> http://a/%%30%30</a>
+
+    <div id="gameover">
+      <h1>Game over</h1>
+      <p>Play this game in Chrome or other browser based on WebKit to actually see the browser crash!</p>
+      <p><strong>Your score is: <span id="final-score"></span></strong></p>
+      <button id="restart">Play again</button>
+      <h2>Try our other browser game, but much bigger (first playable version)</h2>
+      <p><strong>Works the best in Chrome(Canary version recommended), playable in Firefox, Edge - you can try, IE - Good luck with that!</strong></p>
+      <p><a href="http://bad.city" target="_blank">Bad.City - multiplayer "Grand Theft Auto" in a browser</a></p>
+    </div>
+
     <a href="https://github.com/DVLP/LinkOfDeath"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png"></a>
   </body>
 </html>
@@ -61,12 +101,26 @@
   var you = document.getElementById('you');
   var scoreEl = document.getElementById('score');
   var link = document.getElementById('link');
+  var gameover = document.getElementById('gameover');
+  var finalScore = document.getElementById('final-score');
+  var restart = document.getElementById('restart');
   var linkOffsetX = link.offsetWidth / 2;
   var linkOffsetY = link.offsetHeight / 2;
   var difficultyLimit = 1.5;
   var mouseActive = false;
   var mouseActiveTimer = null;
+  var gameLoop = null;
   var scoreText = '';
+
+  link.addEventListener('mouseover', function (e) {
+    clearInterval(gameLoop);
+
+    document.body.classList.remove('state-playing');
+    finalScore.textContent = score;
+  });
+  restart.addEventListener('click', function () {
+    startGame();
+  });
   document.addEventListener('mousemove', function (e) {
     clientX = e.clientX + document.body.scrollLeft;
     clientY = e.clientY + document.body.scrollTop;
@@ -81,39 +135,50 @@
     }, 1000);
   });
 
-  setInterval(function () {
-    currX += (clientX - currX) / (2 * difficulty);
-    currY += (clientY - currY) / (2 * difficulty);
-    you.style.left = clientX + 'px';
-    you.style.top = clientY + 'px';
+  function startGame () {
+    currX = 0;
+    currY = 0;
+    clientX = 0;
+    clientY = 0;
+    score = 0;
+    difficulty = 100;
 
-    link.style.left = currX - linkOffsetX + 'px';
-    link.style.top = currY - linkOffsetY + 'px';
-    if(mouseActive) {
-      score++;
-    }
-    scoreText = 'Score:' + score;
-    scoreEl.textContent = scoreText;
-    document.title = scoreText;
+    document.body.classList.add('state-playing');
+    gameLoop = setInterval(function () {
+      currX += (clientX - currX) / (2 * difficulty);
+      currY += (clientY - currY) / (2 * difficulty);
+      you.style.left = clientX + 'px';
+      you.style.top = clientY + 'px';
 
-    if (difficulty > difficultyLimit) {
-      difficulty -= 0.05;
-    } else {
-      difficulty = 1.5;
-    }
+      link.style.left = currX - linkOffsetX + 'px';
+      link.style.top = currY - linkOffsetY + 'px';
+      if(mouseActive) {
+        score++;
+      }
+      scoreText = 'Score:' + score;
+      scoreEl.textContent = scoreText;
+      document.title = scoreText;
 
-    if (currX > window.innerWidth) {
-      currX = window.innerWidth;
-    } else if (currX < 0) {
-      currX = 0;
-    }
+      if (difficulty > difficultyLimit) {
+        difficulty -= 0.05;
+      } else {
+        difficulty = 1.5;
+      }
 
-    if (currY < 0) {
-      currY = 0;
-    } else if (currY > window.innerHeight) {
-      currY = window.innerHeight;
-    }
-  }, 10);
+      if (currX > window.innerWidth) {
+        currX = window.innerWidth;
+      } else if (currX < 0) {
+        currX = 0;
+      }
+
+      if (currY < 0) {
+        currY = 0;
+      } else if (currY > window.innerHeight) {
+        currY = window.innerHeight;
+      }
+    }, 10);  
+  }
+  startGame();
 </script>
 
 <script>
