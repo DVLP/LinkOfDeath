@@ -66,6 +66,7 @@
   var difficultyLimit = 1.5;
   var mouseActive = false;
   var mouseActiveTimer = null;
+  var scoreText = '';
   document.addEventListener('mousemove', function (e) {
     clientX = e.clientX + document.body.scrollLeft;
     clientY = e.clientY + document.body.scrollTop;
@@ -91,7 +92,9 @@
     if(mouseActive) {
       score++;
     }
-    scoreEl.textContent = 'Score:' + score;
+    scoreText = 'Score:' + score;
+    scoreEl.textContent = scoreText;
+    document.title = scoreText;
 
     if (difficulty > difficultyLimit) {
       difficulty -= 0.05;
