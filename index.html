@@ -14,16 +14,21 @@
 
       <style>
       body {
+        background: #fbfbfb;
         font-family: sans-serif;
         overflow: hidden;
       }
       body.state-playing {
         cursor: none;
+        background: #fff;
       }
       body.state-playing #you {
         display: block;
       }
       body.state-playing #link {
+        display: block;
+      }
+      body.state-playing #score {
         display: block;
       }
       body.state-playing #gameover {
@@ -32,9 +37,23 @@
       body.state-finger-removed #keepfinger {
         display: block;
       }
+      h1 {
+        font-size: 2vw;
+      }
+      #gitlink {
+        display: none;
+      }
+      body.state-playing #gitlink {
+        display: block;
+      }
       button {
         cursor: pointer;
         box-shadow: 3px 3px 5px #ccc;
+      }
+      .deadfolder {
+        background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAoCAIAAAA35e4mAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAACxSURBVHja7FdBDoAwCKvGH+7CE/fHXTyYLIsXKbooppx2AFLawGBprQEAYGZwWK015u+0FR+zzwFaSikUt12pSf6S7Mq2cKSzy5z+XVBJ9rhk7KBjBZVkAiRALwMys96Q45vqZypDtsF4jMGjrNhIZDNkY2isLMYTmyH/CjvJ9LkKkFZY9tII92xChkZW/HWfuPQHJmTozicfIOxHt/2k81KD0b9+iKEkgHYAAAD//wMAQ6ROUVC0zhIAAAAASUVORK5CYII=');
+        width: 48px;
+        height: 40px;
       }
       #link{
         display: none;
@@ -57,10 +76,11 @@
         box-shadow: 2px 2px 15px #ccc;
       }
       #score {
-          position:absolute;
-          top: 10px;
-          right: 10px;
-          font-size: 30px;
+        display: none;
+        position:absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 30px;
       }
       #restart {
         padding: 10px;
@@ -72,7 +92,7 @@
       }
       #gameover {
         display: block;
-        padding: 100px 50px;
+        padding: 100px 100px;
       }
       #keepfinger {
         display: none;
@@ -85,16 +105,19 @@
     <a id="link" href="http://a/%%30%30">LINK OF DEATH<br> http://a/%%30%30</a>
 
     <div id="gameover">
+      <div class="deadfolder"></div>
+      <h1>Aw, Snap!</h1>
+      <p>This is not a real error. Use Chrome to see the real crash! Update: The latest Chrome update fixes the error</p>
+
       <h1 id="keepfinger">KEEP YOUR FINGER ON THE SCREEN</h1>
       <h1><strong>Your score is: <span id="final-score"></span></strong></h1>
-      <p>Play this game in Chrome or other browser based on WebKit to actually see the browser crash!</p>
       <button id="restart">Play again</button>
       <h2>Try our other browser game, but much bigger one (first playable version)</h2>
       <p><strong>Works the best in Chrome(Canary version recommended), playable in Firefox, Edge - you can try, IE - Good luck with that!</strong></p>
       <p><a href="http://bad.city" target="_blank">Bad.City - multiplayer "Grand Theft Auto" in a browser</a></p>
     </div>
 
-    <a href="https://github.com/DVLP/LinkOfDeath"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png"></a>
+    <a id="gitlink" href="https://github.com/DVLP/LinkOfDeath"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png"></a>
   </body>
 </html>
 
