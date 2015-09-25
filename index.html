@@ -8,11 +8,14 @@
     <meta property="og:type" content="game" />
     <meta property="og:url" content="http://linkofdeath.com" />
     <meta property="og:image"  content="http://ecx.images-amazon.com/images/I/61-TKSWRAML._SY355_.jpg">
+    <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, user-scalable=no, maximum-scale=1, minimum-scale=1" />
+
     <link rel="image_src" href="http://ecx.images-amazon.com/images/I/61-TKSWRAML._SY355_.jpg">
 
       <style>
       body {
         font-family: sans-serif;
+        overflow: hidden;
       }
       body.state-playing {
         cursor: none;
@@ -25,6 +28,9 @@
       }
       body.state-playing #gameover {
         display: none;
+      }
+      body.state-finger-removed #keepfinger {
+        display: block;
       }
       button {
         cursor: pointer;
@@ -68,6 +74,9 @@
         display: block;
         padding: 100px 50px;
       }
+      #keepfinger {
+        display: none;
+      }
       </style>
   </head>
   <body class="state-playing">
@@ -76,6 +85,7 @@
     <a id="link" href="http://a/%%30%30">LINK OF DEATH<br> http://a/%%30%30</a>
 
     <div id="gameover">
+      <h1 id="keepfinger">KEEP YOUR FINGER ON THE SCREEN</h1>
       <h1><strong>Your score is: <span id="final-score"></span></strong></h1>
       <p>Play this game in Chrome or other browser based on WebKit to actually see the browser crash!</p>
       <button id="restart">Play again</button>
@@ -100,7 +110,6 @@
   var you = document.getElementById('you');
   var scoreEl = document.getElementById('score');
   var link = document.getElementById('link');
-  var gameover = document.getElementById('gameover');
   var finalScore = document.getElementById('final-score');
   var restart = document.getElementById('restart');
   var linkOffsetX = link.offsetWidth / 2;
@@ -110,12 +119,15 @@
   var mouseActiveTimer = null;
   var gameLoop = null;
   var scoreText = '';
+  var gameState = '';
+  var states = {
+    PLAYING: 'state-playing',
+    FINGER_REMOVED: 'state-finger-removed',
+    GAME_END: 'state-game-end'
+  };
 
   link.addEventListener('mouseover', function (e) {
-    clearInterval(gameLoop);
-
-    document.body.classList.remove('state-playing');
-    finalScore.textContent = score;
+    endGame();
   });
   restart.addEventListener('click', function () {
     startGame();
@@ -124,6 +136,9 @@
     clientX = e.clientX + document.body.scrollLeft;
     clientY = e.clientY + document.body.scrollTop;
     mouseActive = true;
+
+    you.style.left = clientX + 'px';
+    you.style.top = clientY + 'px';
 
     // stop adding score when a user is not moving mouse
     if(mouseActiveTimer) {
@@ -134,6 +149,38 @@
     }, 1000);
   });
 
+  document.addEventListener('touchmove', function (e) {
+    clientX = e.changedTouches[0].clientX + document.body.scrollLeft;
+    clientY = e.changedTouches[0].clientY + document.body.scrollTop;
+    mouseActive = true;
+
+    you.style.left = clientX + 'px';
+    you.style.top = clientY + 'px';
+
+    // stop adding score when a user is not moving mouse
+    if(mouseActiveTimer) {
+      clearTimeout(mouseActiveTimer);
+    }
+    mouseActiveTimer = setTimeout(function () {
+      mouseActive = false;
+    }, 1000);
+  });
+
+  document.addEventListener('touchend', function (e) {
+    if(gameState !== states.PLAYING) {
+      return;
+    }
+    endGame();
+    setGameState(states.FINGER_REMOVED);
+  });
+
+  function setGameState (state) {
+    gameState = state;
+    document.body.className = '';
+    //state.map(function (st) {
+      document.body.classList.add(state);
+    //});
+  }
   function startGame () {
     currX = 0;
     currY = 0;
@@ -142,12 +189,15 @@
     score = 0;
     difficulty = 100;
 
-    document.body.classList.add('state-playing');
+    setGameState(states.PLAYING);
     gameLoop = setInterval(function () {
       currX += (clientX - currX) / (2 * difficulty);
       currY += (clientY - currY) / (2 * difficulty);
-      you.style.left = clientX + 'px';
-      you.style.top = clientY + 'px';
+
+      if(clientX && Math.abs(currX - clientX) < 30 && Math.abs(currY - clientY) < 15) {
+        endGame();
+        setGameState(states.GAME_END);
+      }
 
       link.style.left = currX - linkOffsetX + 'px';
       link.style.top = currY - linkOffsetY + 'px';
@@ -176,6 +226,12 @@
         currY = window.innerHeight;
       }
     }, 10);  
+  }
+  function endGame () {
+    clearInterval(gameLoop);
+
+    setGameState(states.GAME_END);
+    finalScore.textContent = score;
   }
   startGame();
 </script>
